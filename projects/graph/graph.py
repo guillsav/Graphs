@@ -3,39 +3,97 @@ Simple graph implementation
 """
 from util import Stack, Queue  # These may come in handy
 
+# Vertex
+# Identifier (Int, name, string, etc).
+# List of edges.
+
+
 class Graph:
-    """Represent a graph as a dictionary of vertices mapping labels to edges."""
+    """
+    Represent a graph as a dictionary of vertices mapping labels to edges.
+    """
+
     def __init__(self):
         self.vertices = {}
+
     def add_vertex(self, vertex):
         """
         Add a vertex to the graph.
         """
-        pass  # TODO
+        if vertex not in self.vertices:
+            self.vertices[vertex] = set()
+        else:
+            print("Warning, vertex exists")
+
     def add_edge(self, v1, v2):
         """
         Add a directed edge to the graph.
         """
-        pass  # TODO
+        if v1 in self.vertices and v2 in self.vertices:
+            self.vertices[v1].add(v2)
+        else:
+            print("Warning, supplied vertex does not exist!")
+
     def bft(self, starting_vertex):
         """
         Print each vertex in breadth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        q = Queue()
+        q.enqueue(starting_vertex)
+        found = [starting_vertex, ]
+
+        while q.size() > 0:
+            for vertex in self.vertices[q.queue[0]]:
+                if vertex not in found:
+                    q.enqueue(vertex)
+                    found.append(vertex)
+            q.dequeue()
+        print(f"BFT: {found}")
+
     def dft(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         """
-        pass  # TODO
+        s = Stack()
+
+        s.push(starting_vertex)
+        found = [starting_vertex, ]
+        visited = {}
+        visited[starting_vertex] = True
+
+        while s.size() > 0:
+            for vertex in self.vertices[s.stack[0]]:
+                if vertex not in found:
+                    s.push(vertex)
+                    found.append(vertex)
+                    for node in self.vertices:
+                        if node not in visited:
+                            visited[node] = True
+                            s.push(node)
+                            if node not in found and visited[node] is True:
+                                found.append(node)
+                s.pop()
+        print(f"DFT: {found}")
+
     def dft_recursive(self, starting_vertex):
         """
         Print each vertex in depth-first order
         beginning from starting_vertex.
         This should be done using recursion.
         """
-        pass  # TODO
+        s = Stack()
+
+        s.push(starting_vertex)
+        found = [starting_vertex, ]
+        visited = {}
+        visited[starting_vertex] = True
+
+        for vertex in self.vertices:
+            if vertex not in visited and vertex not in found:
+                self.dft(vertex)
+
     def bfs(self, starting_vertex, destination_vertex):
         """
         Return a list containing the shortest path from
@@ -43,6 +101,7 @@ class Graph:
         breath-first order.
         """
         pass  # TODO
+
     def dfs(self, starting_vertex, destination_vertex):
         """
         Return a list containing a path from
@@ -50,9 +109,6 @@ class Graph:
         depth-first order.
         """
         pass  # TODO
-
-
-
 
 
 if __name__ == '__main__':
