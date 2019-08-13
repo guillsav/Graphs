@@ -1,14 +1,25 @@
+import math
+import random
+from ..util import Queue
 
 
 class User:
+
     def __init__(self, name):
         self.name = name
+
+    def __repr__(self):
+        return self.name
+
 
 class SocialGraph:
     def __init__(self):
         self.lastID = 0
         self.users = {}
         self.friendships = {}
+
+    # def __repr__(self):
+    #     return f"Friendships: {self.friendships}"
 
     def addFriendship(self, userID, friendID):
         """
@@ -45,6 +56,29 @@ class SocialGraph:
         self.users = {}
         self.friendships = {}
         # !!!! IMPLEMENT ME
+        for i in range(0, numUsers):
+            self.addUser(f"Brian{i + 1}")
+        # print(self.users)
+
+        possibleFrienships = []
+        for userID in self.users:
+            for friendID in range(userID + 1, self.lastID + 1):
+                possibleFrienships.append((userID, friendID))
+
+        friendshipsToCreate = random.sample(
+            possibleFrienships, (numUsers * avgFriendships) // 2)
+
+        for friendship in friendshipsToCreate:
+            self.addFriendship(friendship[0], friendship[1])
+
+        # print(possibleFrienships)
+        # print(len(possibleFrienships))
+
+        # random.shuffle(possibleFrienships)
+
+        # for i in range(0, math.floor(numUsers * avgFriendships / 2)):
+        #     friendship = possibleFrienships[i]
+        #     self.addFriendship(friendship[0], friendship[1])
 
         # Add users
 
@@ -59,8 +93,19 @@ class SocialGraph:
 
         The key is the friend's ID and the value is the path.
         """
+        q = Queue()
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        q.enqueue([userID])
+        while q.size > 0:
+            path = q.dequeue()
+            v = path[-1]
+            if v not in visited:
+                visited[v] = path
+                for next_v in self.friendships[v]:
+                    new_path = list(path)
+                    new_path.append(next_v)
+                    q.enqueue(new_path)
         return visited
 
 
